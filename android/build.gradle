@@ -1,0 +1,52 @@
+group 'com.mixaline.sonicdb'
+version '1.0-SNAPSHOT'
+
+buildscript {
+  ext.kotlin_version = '1.4.21'
+  repositories {
+    google()
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.android.tools.build:gradle:4.1.2'
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
+rootProject.allprojects {
+  repositories {
+    google()
+    jcenter()
+  }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+  compileSdkVersion 30
+
+  sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+  }
+  defaultConfig {
+    minSdkVersion 16
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  kotlinOptions {
+    jvmTarget = '1.8'
+  }
+}
+
+dependencies {
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation 'nl.komponents.kovenant:kovenant:3.3.0'
+  implementation 'com.google.code.gson:gson:2.8.6'
+  implementation("com.google.guava:guava:30.1-android")
+  implementation 'net.sourceforge.streamsupport:android-retrostreams:1.6.1'
+}

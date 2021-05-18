@@ -1,0 +1,31 @@
+builders:
+  # database:
+  #   target: ":database"
+  #   import: "package:sonicdb/sonicdb_generator.dart"
+  #   builder_factories: ["databaseBuilder"]
+  #   build_extensions: { ".dart": [".database.dart"] }
+  #   auto_apply: dependents
+  #   build_to: source
+  # entity: 
+  #   target: ":entity"
+  #   import: "package:sonicdb/sonicdb_generator.dart"
+  #   builder_factories: ["entityBuilder"]
+  #   build_extensions: { ".dart": [".entity.dart"] }
+  #   auto_apply: dependents
+  #   build_to: source
+  part: 
+    target: ":part"
+    import: "package:sonicdb/sonicdb_generator.dart"
+    builder_factories: ["sonicdbPartBuilder"]
+    build_extensions: { ".dart": [".g.dart"] }
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]
+  # collection: 
+  #   target: ":collection"
+  #   import: "package:sonicdb/sonicdb_generator.dart"
+  #   builder_factories: ["collectionBuilder"]
+  #   build_extensions: { ".dart": [".collection.dart"] }
+  #   auto_apply: dependents
+  #   build_to: source
+    # applies_builders: ["source_gen|combining_builder"]
