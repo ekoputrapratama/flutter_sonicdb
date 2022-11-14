@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:logging/src/logger.dart';
+import 'package:logging/src/level.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -52,12 +53,12 @@ class DatabaseGenerator extends GeneratorForAnnotation<Database> {
   @override
   String generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
-    print("building element ${element.name}");
+    logger.log(Level.INFO, "building element ${element.name}");
     if (element is! ClassElement) {
       final name = element.displayName;
       throw InvalidGenerationSourceError(
         'Generator cannot target `$name`.',
-        todo: 'Remove the [RestApi] annotation from `$name`.',
+        todo: 'Remove the [Database] annotation from `$name`.',
       );
     }
     return _implementClass(element, annotation);
@@ -71,10 +72,10 @@ class DatabaseGenerator extends GeneratorForAnnotation<Database> {
     final List<DartObject> entities =
         annotation.peek('entities')?.listValue ?? [];
 
-    ClassElement entityClass =
-        entities[0].toTypeValue()!.element as ClassElement;
+    // ClassElement entityClass =
+    //     entities[0].toTypeValue()!.element as ClassElement;
     var fields = element.fields;
-    var methods = element.methods;
+    // var methods = element.methods;
     // logger.log(Level.INFO, "fields ${fields}");
     // logger.log(Level.INFO, "methods ${methods}");
     // logger.log(Level.INFO, "entities ${entityClass.fields}");
@@ -121,8 +122,7 @@ class DatabaseGenerator extends GeneratorForAnnotation<Database> {
       }
     });
     final libraryBuilder = Library((l) {
-      for (var lib in element.library.imports) {
-        // print("CollectionGenerator : library source ${lib.uri}");
+      for (var lib in element.library.libraryImports) {
         l.body.add(Code("import '${lib.uri.toString()}';"));
       }
 
@@ -139,7 +139,7 @@ class DatabaseGenerator extends GeneratorForAnnotation<Database> {
   Block _getGeneratedImports(ClassElement element) {
     var fields =
         element.fields.where((field) => isCollectionField(field)).toList();
-    var methods = element.methods;
+    // var methods = element.methods;
     var results = <Code>[];
 
     for (var field in fields) {
@@ -155,9 +155,6 @@ class DatabaseGenerator extends GeneratorForAnnotation<Database> {
     return Block.of(results);
   }
 
-  // bool isCollectionMethod(MethodElement method) {
-  //   ClassElement collectionClass = method.type.element;
-  // }
   Field toCollectionField(FieldElement field, ClassElement collectionClass) {
     return Field((m) => m
       ..name = field.name
@@ -396,7 +393,6 @@ class DatabasePartGenerator extends DatabaseGenerator {
     final version = annotation.peek('version')?.intValue;
     final useDeviceProtectedStorage =
         annotation.peek('useDeviceProtectedStorage')?.boolValue;
-    print("useDeviceProtectedStorage $useDeviceProtectedStorage");
     final annotClassConsts = element.constructors
         .where((c) => !c.isFactory && !c.isDefaultConstructor);
     var collectionFields =
@@ -512,7 +508,7 @@ class DatabasePartGenerator extends DatabaseGenerator {
               c.requiredParameters.add(Parameter((p) => p
                 ..type = refer(_displayString(element.type))
                 ..name = element.name
-                ..defaultTo = classParamterHasAssignment(clazz, element)
+                ..defaultTo = classParameterHasAssignment(clazz, element)
                     ? Code(getParameterAssignment(clazz, element))
                     : null));
             } else {
@@ -520,7 +516,7 @@ class DatabasePartGenerator extends DatabaseGenerator {
                 ..named = element.isNamed
                 ..type = refer(_displayString(element.type))
                 ..name = element.name
-                ..defaultTo = classParamterHasAssignment(
+                ..defaultTo = classParameterHasAssignment(
                         clazz.supertype!.element, element)
                     ? Code(getParameterAssignment(
                         clazz.supertype!.element, element))
@@ -550,7 +546,6 @@ class DatabasePartGenerator extends DatabaseGenerator {
           ClassElement entityClass =
               entity.toTypeValue()!.element as ClassElement;
 
-          // print("entity metadata ${metaClass.getField("name")}");
           var entityFields =
               entityClass.fields.where((field) => isColumnField(field));
 
@@ -626,8 +621,8 @@ class DatabasePartGenerator extends DatabaseGenerator {
 
   String _getClassMethodBody(ClassElement clazz, MethodElement method) {
     var session = method.session;
-    ParsedLibraryResult parsedLibResult =
-        session!.getParsedLibraryByElement(clazz.library);
+    ParsedLibraryResult parsedLibResult = session!
+        .getParsedLibraryByElement(clazz.library) as ParsedLibraryResult;
     ElementDeclarationResult declaration =
         parsedLibResult.getElementDeclaration(method)!;
 
@@ -639,7 +634,6 @@ class DatabasePartGenerator extends DatabaseGenerator {
 
     var lastIndex = source.lastIndexOf("}");
     source = source.replaceRange(lastIndex, lastIndex + 1, "");
-    // print("method source $source");
     return source;
   }
 }

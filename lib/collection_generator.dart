@@ -158,7 +158,7 @@ class CollectionGenerator extends GeneratorForAnnotation<Collection> {
             ..type = p.type
             ..defaultTo = it.defaultValueCode == null
                 ? null
-                : Code(it.defaultValueCode))));
+                : Code(it.defaultValueCode!))));
 
       mm.body = _generateMethodBody(m);
     });
@@ -594,7 +594,7 @@ class CollectionPartGenerator extends CollectionGenerator {
             ..type = p.type
             ..defaultTo = it.defaultValueCode == null
                 ? null
-                : Code(it.defaultValueCode))));
+                : Code(it.defaultValueCode!))));
 
       mm.body = _buildMethodBody(m, entity);
     });

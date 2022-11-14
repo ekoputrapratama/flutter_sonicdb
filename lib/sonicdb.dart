@@ -31,18 +31,18 @@ abstract class SonicDb {
   int _id = 0;
   bool _opened = false;
   bool _initialized = false;
-  bool useDeviceProtectedStorage = false;
+  bool useDeviceProtectedStorage;
   bool get opened => _opened;
 
   SonicDb(
       {this.name = "sonicdb",
       this.entities = const {},
       this.version = 1,
-      bool? useDeviceProtectedStorage}) {
+      this.useDeviceProtectedStorage = false}) {
     log("useDeviceProtectedStorage $useDeviceProtectedStorage");
-    if (useDeviceProtectedStorage != null) {
-      this.useDeviceProtectedStorage = useDeviceProtectedStorage;
-    }
+    // if (useDeviceProtectedStorage != null) {
+    //   this.useDeviceProtectedStorage = useDeviceProtectedStorage;
+    // }
     init();
   }
 
@@ -78,7 +78,7 @@ abstract class SonicDb {
       if (!_initialized) {
         throw Exception("database hasn't been initialized");
       } else {
-        return _open();
+        return _open(singleInstance: singleInstance);
       }
     });
   }

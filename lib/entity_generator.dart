@@ -116,7 +116,10 @@ class EntityGenerator extends GeneratorForAnnotation<Entity> {
         ..assignment = classFieldHasAssignment(clazz, field)
             ? Code(getClassFieldValue(clazz, field))
             : null
-        ..type = refer(field.type.getDisplayString(withNullability: true))
+        ..type = classFieldHasAssignment(clazz, field)
+            ? refer(field.type.getDisplayString(withNullability: true))
+            : refer(
+                "late ${field.type.getDisplayString(withNullability: true)}")
         ..modifier = FieldModifier.var$));
     }
 

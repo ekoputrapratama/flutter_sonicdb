@@ -57,20 +57,16 @@ bool isEntityClass(ClassElement element) {
 }
 
 bool isCollectionField(FieldElement field) {
-  // print("validating collection field ${field.name}");
   ClassElement collectionClass = field.type.element as ClassElement;
   if (collectionClass.metadata.length == 0) {
     return false;
   }
   var annotation = getAnnotation(collectionClass, Collection);
-  // var collectionSuperclass = collectionClass.supertype;
-  // var collectionTypeString = collectionSuperclass.toString();
-  // var isCollectionType = typeChecker(Database).hasAnnotationOf(collectionClass)
-  // print("field type annotation ${annotation}");
-  // print(
-  //     "field type is Collection ${annotation.instanceOf(typeChecker(Collection))}");
   return annotation != null;
 }
+// bool isCollectionMethod(MethodElement method) {
+//   ClassElement collectionClass = method.type.element;
+// }
 
 bool isQueryMethod(MethodElement method) {
   if (method.metadata.length == 0) {
@@ -111,15 +107,15 @@ bool isInsertMethod(MethodElement method) {
 
   if (annotation != null && requiredParameters.length == 0) {
     throw InvalidGenerationSourceError(
-      'Generator cannot create target method `${method.name}` because it doesn\'t have required parameter.',
+      'Generator cannot create the target method `${method.name}` because it doesn\'t have required parameter.',
       todo:
           'Remove the [Insert] annotation from method `${method.name}` or define your parameter.',
     );
   } else if (annotation != null && requiredParameters.length > 1) {
     throw InvalidGenerationSourceError(
-      'Generator cannot create target method `${method.name}` because it have multiple required parameters.',
+      'Generator cannot create the target method `${method.name}` because it have multiple required parameters.',
       todo:
-          'Remove the [Insert] annotation from method `${method.name}` or remove other parameters.',
+          'Remove the [Insert] annotation from the method `${method.name}` or remove other parameters.',
     );
   }
   return annotation != null;
@@ -177,7 +173,7 @@ bool isUpdateQuery(dynamic query) {
 String getClassMethodBody(ClassElement clazz, MethodElement method) {
   var session = method.session!;
   ParsedLibraryResult parsedLibResult =
-      session.getParsedLibraryByElement(clazz.library);
+      session.getParsedLibraryByElement(clazz.library) as ParsedLibraryResult;
   ElementDeclarationResult declaration =
       parsedLibResult.getElementDeclaration(method)!;
 
@@ -196,7 +192,7 @@ String getClassMethodBody(ClassElement clazz, MethodElement method) {
 String getClassFieldValue(ClassElement clazz, FieldElement field) {
   var session = field.session!;
   ParsedLibraryResult parsedLibResult =
-      session.getParsedLibraryByElement(clazz.library);
+      session.getParsedLibraryByElement(clazz.library) as ParsedLibraryResult;
   ElementDeclarationResult declaration =
       parsedLibResult.getElementDeclaration(field)!;
 
@@ -206,31 +202,33 @@ String getClassFieldValue(ClassElement clazz, FieldElement field) {
 bool classFieldHasAssignment(ClassElement clazz, FieldElement field) {
   var session = field.session!;
   ParsedLibraryResult parsedLibResult =
-      session.getParsedLibraryByElement(clazz.library);
+      session.getParsedLibraryByElement(clazz.library) as ParsedLibraryResult;
   ElementDeclarationResult declaration =
       parsedLibResult.getElementDeclaration(field)!;
   //print("classFieldHasAssignment ${declaration.node.toSource().split("=")}");
   return declaration.node.toSource().split("=").length > 1;
 }
 
-bool classParamterHasAssignment(
+bool classParameterHasAssignment(
     ClassElement clazz, ParameterElement parameter) {
   var session = parameter.session!;
   ParsedLibraryResult parsedLibResult =
-      session.getParsedLibraryByElement(clazz.library);
+      session.getParsedLibraryByElement(clazz.library) as ParsedLibraryResult;
   ElementDeclarationResult declaration =
       parsedLibResult.getElementDeclaration(parameter)!;
-  print(
-      "classParameterHasAssignment ${declaration.node.toSource().split("=")}");
+  // print(
+  //     "classParameterHasAssignment ${declaration.node.toSource().split("=")}");
+
   return declaration.node.toSource().split("=").length > 1;
 }
 
 String getParameterAssignment(ClassElement clazz, ParameterElement parameter) {
   var session = parameter.session!;
   ParsedLibraryResult parsedLibResult =
-      session.getParsedLibraryByElement(clazz.library);
+      session.getParsedLibraryByElement(clazz.library) as ParsedLibraryResult;
   ElementDeclarationResult declaration =
       parsedLibResult.getElementDeclaration(parameter)!;
+
   return declaration.node.toSource().split("=").last;
 }
 

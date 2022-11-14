@@ -50,6 +50,8 @@ class ColumnInfo {
   final DataType? type;
 }
 
+// TODO: need to add more data type but i think the data type that can be transferred through MethodChannel is limited
+// maybe should add a basic data type like Float or Double
 enum DataType { INTEGER, TEXT, BLOB }
 
 @immutable
